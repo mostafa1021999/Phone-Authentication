@@ -30,10 +30,17 @@ class _onBoardingState extends State<onBoarding> {
         padding: const EdgeInsets.all(14.0),
         child: Column(
           children: [
-            Align(
-              alignment: Alignment.topRight,
-              child: TextButton(
-                  onPressed: (){}, child: Text('تخطى',style: TextStyle(color: mainColor),)),
+            Row(
+              children: [
+                 BackButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+                Align(
+                  alignment: Alignment.topRight,
+                  child: TextButton(
+                      onPressed: (){}, child: Text('تخطى',style: TextStyle(color: mainColor),)),
+                ),
+              ],
             ),
           const SizedBox(height: 25,),
             Expanded(

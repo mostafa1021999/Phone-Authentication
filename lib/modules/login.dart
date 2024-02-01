@@ -1,7 +1,8 @@
 import 'package:delivery/componants/colors.dart';
-import 'package:delivery/modules/signup%20delivery.dart';
+import 'package:delivery/modules/otp%20number.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
+import 'package:intl_phone_field/intl_phone_field.dart';
 import '../componants/componants.dart';
 
 class LoginSignupScreen extends StatefulWidget {
@@ -13,6 +14,9 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
   bool isSignupScreen = false;
   bool isMale = true;
   bool isRememberMe = false;
+  String countryCode='20';
+  FirebaseAuth auth=FirebaseAuth.instance;
+  TextEditingController numberController=TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -43,11 +47,11 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
           AnimatedPositioned(
             duration: Duration(milliseconds: 700),
             curve: Curves.bounceInOut,
-            top: isSignupScreen ? 200 : 230,
+            top: 200 ,
             child: AnimatedContainer(
               duration: Duration(milliseconds: 700),
               curve: Curves.bounceInOut,
-              height: isSignupScreen ? 380 : 250,
+              height: 250,
               padding: EdgeInsets.all(20),
               width: MediaQuery.of(context).size.width - 40,
               margin: EdgeInsets.symmetric(horizontal: 20),
@@ -136,9 +140,9 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
             top: isSignupScreen? MediaQuery.of(context).size.height -250:MediaQuery.of(context).size.height - 330,
             right: 0,
             left: 0,
-            child: Column(
+            child: !isSignupScreen ?Column(
               children: [
-                Text(isSignupScreen ? "Or Signup with" : "Or Signin with"),
+                Text( "Or Signin with"),
                 Container(
                   margin: EdgeInsets.only(right: 20, left: 20, top: 15),
                   child: Row(
@@ -152,7 +156,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                   ),
                 )
               ],
-            ),
+            ): const Padding(padding: EdgeInsets.all(8)),
           )
         ],
       ),
@@ -164,9 +168,9 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
       margin: EdgeInsets.only(top: 20),
       child: Column(
         children: [
-          buildTextField(Icons.mail_outline, "info@gmail.com", false, true),
+          buildTextField(Icons.mail_outline, "info@gmail.com", false, TextInputType.emailAddress),
           buildTextField(
-              Icons.lock_outline, "Enter your password", true, false),
+              Icons.lock_outline, "Enter your password", true, TextInputType.text),
           Align(
             alignment: Alignment.topRight,
             child: TextButton(
@@ -185,104 +189,12 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
       margin: EdgeInsets.only(top: 20),
       child: Column(
         children: [
-          buildTextField(Icons.account_box_outlined, "User Name",
-              false, false),
-          buildTextField(
-              Icons.email_outlined, "email", false, true),
-          buildTextField(
-              Icons.lock_outline, "password", true, false),
-          Padding(
-            padding: const EdgeInsets.only(top: 10, left: 10),
-            child: Row(
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      isMale = true;
-                    });
-                  },
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 30,
-                        height: 30,
-                        margin: EdgeInsets.only(right: 8),
-                        decoration: BoxDecoration(
-                            color: isMale
-                                ? Palette.textColor2
-                                : Colors.transparent,
-                            border: Border.all(
-                                width: 1,
-                                color: isMale
-                                    ? Colors.transparent
-                                    : Palette.textColor1),
-                            borderRadius: BorderRadius.circular(15)),
-                        child: Icon(
-                          Icons.account_box_outlined,
-                          color: isMale ? Colors.white : Palette.iconColor,
-                        ),
-                      ),
-                      Text(
-                        "Male",
-                        style: TextStyle(color: Palette.textColor1),
-                      )
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  width: 30,
-                ),
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      isMale = false;
-                    });
-                  },
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 30,
-                        height: 30,
-                        margin: EdgeInsets.only(right: 8),
-                        decoration: BoxDecoration(
-                            color: isMale
-                                ? Colors.transparent
-                                : Palette.textColor2,
-                            border: Border.all(
-                                width: 1,
-                                color: isMale
-                                    ? Palette.textColor1
-                                    : Colors.transparent),
-                            borderRadius: BorderRadius.circular(15)),
-                        child: Icon(
-                          Icons.account_circle_outlined,
-                          color: isMale ? Palette.iconColor : Colors.white,
-                        ),
-                      ),
-                      Text(
-                        "Female",
-                        style: TextStyle(color: Palette.textColor1),
-                      )
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Align(
-            alignment: Alignment.topRight,
-            child: Container(
-              width: 150,
-              margin: EdgeInsets.only(top: 20),
-              child: TextButton(onPressed: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context) =>  delivery()));
-              },
-              child: Text("Signup as delivery",
-                style: TextStyle(color: Colors.orange,fontSize: 15),
-              ),
-              )
-            ),
-          ),
+          IntlPhoneField(decoration: InputDecoration(labelText: 'Phone number'),
+          initialCountryCode: 'EG',
+          onCountryChanged: (code){
+              countryCode=code.fullCountryCode;
+          },
+          controller: numberController,)
         ],
       ),
     );
@@ -319,7 +231,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
     return AnimatedPositioned(
       duration: Duration(milliseconds: 100),
       curve: Curves.linear,
-      top: isSignupScreen ? 535 : 450,
+      top: 420,
       right: 0,
       left: 0,
       child: Center(
@@ -339,22 +251,28 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                   )
               ]),
           child: !showShadow
-              ? Container(
-            decoration: BoxDecoration(
-                gradient: LinearGradient(
-                    colors: [Colors.orange, Colors.red],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight),
-                borderRadius: BorderRadius.circular(10),
-                boxShadow: [
-                  BoxShadow(
-                      color: Colors.black.withOpacity(.3),
-                      spreadRadius: 1,
-                      blurRadius: 2,
-                      offset: Offset(0, 1))
-                ]),
-            child: Center(child:  Text(isSignupScreen? 'Signup':'Login'  , style: TextStyle( fontWeight: FontWeight.bold , fontSize: 25,color: Colors.white))),
-          )
+              ? InkWell(
+                onTap: isSignupScreen?(){
+                  phoneauth();
+                 navigate(context, OtpNumber(phoneNumber: numberController.text, country: countryCode,));
+                }:(){},
+                child: Container(
+                            decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                      colors: [Colors.orange, Colors.red],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight),
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: [
+                    BoxShadow(
+                        color: Colors.black.withOpacity(.3),
+                        spreadRadius: 1,
+                        blurRadius: 2,
+                        offset: Offset(0, 1))
+                  ]),
+                            child: Center(child:  Text(isSignupScreen? 'Verify':'Login'  , style: TextStyle( fontWeight: FontWeight.bold , fontSize: 25,color: Colors.white))),
+                          ),
+              )
               : Center(),
         ),
       ),
@@ -376,7 +294,23 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                 blurRadius: 2,
                 offset: Offset(0, 1))
           ]),
-      child: Center(child:  Text(isSignupScreen? 'Signup':'Login'  , style: TextStyle( fontWeight: FontWeight.bold , fontSize: 25,color: Colors.white))),
+      child: Center(child:  Text(isSignupScreen? 'Verify':'Login'  , style: TextStyle( fontWeight: FontWeight.bold , fontSize: 25,color: Colors.white))),
+    );
+  }
+  void phoneauth()async{
+    await FirebaseAuth.instance.verifyPhoneNumber(
+      phoneNumber: '+201011671600',
+      verificationCompleted: (PhoneAuthCredential credential) {},
+      verificationFailed: (FirebaseAuthException e) {},
+      timeout: const Duration(seconds: 60),
+      codeSent: (String verificationId, int? resendToken) async{
+        String smsCode = '123456';
+        // Create a PhoneAuthCredential with the code
+        PhoneAuthCredential credential = PhoneAuthProvider.credential(verificationId: verificationId, smsCode: smsCode);
+        await auth.signInWithCredential(credential);
+
+      },
+      codeAutoRetrievalTimeout: (String verificationId) {},
     );
   }
 }

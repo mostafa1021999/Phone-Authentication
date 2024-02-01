@@ -27,9 +27,9 @@ class _deliveryState extends State<delivery> {
           padding: const EdgeInsets.all(15.0),
           child: ListView(children: [
             buildTextField(Icons.account_box_outlined, "Frist Name",
-                false, false),
+                false, TextInputType.name),
             buildTextField(Icons.account_box_outlined, "Last Name",
-                false, false),
+                false, TextInputType.name),
             GestureDetector(
                 child: dateSelected?
                 date("${birthDate!.month}/${birthDate!.day}/${birthDate!.year}",true):date('mm/dd/yy',false),
@@ -38,7 +38,7 @@ class _deliveryState extends State<delivery> {
                       context: context,
                       initialDate: new DateTime.now(),
                       firstDate: new DateTime(1900),
-                      lastDate: new DateTime(2100)
+                      lastDate: new DateTime.now(),
                   );
                   if(datePick!=null && datePick!=birthDate){
                     setState(() {
@@ -56,6 +56,14 @@ class _deliveryState extends State<delivery> {
                 showImagePickerOption(context);
               }),
             ),
+            _image != null
+                ? CircleAvatar(
+                radius: 100, backgroundImage: MemoryImage(_image!))
+                : const CircleAvatar(
+              radius: 100,
+              backgroundImage: NetworkImage(
+                  "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"),
+            ),
           ],),
         ),
       ),
@@ -63,7 +71,7 @@ class _deliveryState extends State<delivery> {
   }
   void showImagePickerOption(BuildContext context) {
     showModalBottomSheet(
-        backgroundColor: Colors.blue[100],
+        backgroundColor: Colors.orange[250],
         context: context,
         builder: (builder) {
           return Padding(
@@ -84,6 +92,7 @@ class _deliveryState extends State<delivery> {
                             Icon(
                               Icons.image,
                               size: 70,
+                              color: Colors.white,
                             ),
                             Text("Gallery")
                           ],
@@ -102,6 +111,7 @@ class _deliveryState extends State<delivery> {
                             Icon(
                               Icons.camera_alt,
                               size: 70,
+                              color: Colors.white,
                             ),
                             Text("Camera")
                           ],
